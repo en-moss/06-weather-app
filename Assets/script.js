@@ -1,12 +1,12 @@
-window.addEventListener('load', function() {
-    localStorage.clear()
-})
+// window.addEventListener('load', function() {
+//     localStorage.clear()
+// })
 
 //api documentation https://openweathermap.org/api/one-call-api
 
 let apiKey = 'c2472aea17954013d40705840bcbffd4';
 
-let latLonBase = 'http://api.openweathermap.org/geo/1.0/direct?q=';
+let latLonBase = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 let cityBaseURL = 'https://api.openweathermap.org/data/2.5/weather?'
 
 let city = document.getElementById('citySearch');
