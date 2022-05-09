@@ -1,3 +1,16 @@
+header {
+    text-align: center;
+    background-image: linear-gradient(to bottom right, rgb(221, 49, 60), orange);
+    padding: .5rem;
+    margin-bottom: 1rem;
+}
+
 .cityBtn {
     margin: .25rem;
+}
+
+.city-selection {
+    border: solid 2px;
+    border-radius: 5px;
+    padding: .5rem 1rem;
 }

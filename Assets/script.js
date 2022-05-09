@@ -1,8 +1,13 @@
+window.addEventListener('load', function() {
+    localStorage.clear()
+})
+
+//api documentation https://openweathermap.org/api/one-call-api
+
 let apiKey = 'c2472aea17954013d40705840bcbffd4';
 
 let latLonBase = 'http://api.openweathermap.org/geo/1.0/direct?q=';
 let cityBaseURL = 'https://api.openweathermap.org/data/2.5/weather?'
-//https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
 
 let city = document.getElementById('citySearch');
 let search = document.getElementById('cityBtn');
@@ -40,3 +45,11 @@ search.addEventListener('click', function(e) {
         }
     })
 })
+
+fetch(localStorage.getItem('cityURL'))
+    .then (function(response) {
+        response.json()
+            .then (function(data) {
+                console.log(data)
+            })
+    })
