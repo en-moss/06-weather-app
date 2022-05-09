@@ -46,10 +46,10 @@ search.addEventListener('click', function(e) {
     })
 })
 
-fetch(localStorage.getItem('cityURL'))
-    .then (function(response) {
-        response.json()
-            .then (function(data) {
-                console.log(data)
-            })
-    })
+// fetch(localStorage.getItem('cityURL'))
+//     .then (function(response) {
+//         response.json()
+//             .then (function(data) {
+//                 console.log(data)
+//             })
+//     })
