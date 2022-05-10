@@ -7,7 +7,7 @@
 let apiKey = 'c2472aea17954013d40705840bcbffd4';
 
 let latLonBase = 'https://api.openweathermap.org/geo/1.0/direct?q=';
-let cityBaseURL = 'https://api.openweathermap.org/data/2.5/weather?'
+let cityBaseURL = 'https://api.openweathermap.org/data/2.5/onecall?'
 
 let city = document.getElementById('citySearch');
 let search = document.getElementById('cityBtn');
@@ -37,7 +37,7 @@ search.addEventListener('click', function(e) {
                         let chosenCoords = this.id
                         let lat = data[chosenCoords].lat
                         let lon = data[chosenCoords].lon
-                        let cityURL = cityBaseURL + 'lat=' + lat + '&lon=' + lon + '&appid=' + apiKey
+                        let cityURL = cityBaseURL + 'lat=' + lat + '&lon=' + lon + '&units=imperial&exclude=minutely,hourly&appid=' + apiKey
                         localStorage.setItem('cityURL', cityURL);
                     })
                 }
@@ -46,10 +46,32 @@ search.addEventListener('click', function(e) {
     })
 })
 
-// fetch(localStorage.getItem('cityURL'))
-//     .then (function(response) {
-//         response.json()
-//             .then (function(data) {
-//                 console.log(data)
-//             })
-//     })
+let dayWeatherArr = []
+let dayTempArr = []
+let dayHumidArr = []
+let dayUvArr = []
+let dayWindArr = []
+
+fetch(localStorage.getItem('cityURL'))
+    .then (function(response) {
+        response.json()
+            .then (function(data) {
+                // let curWeather = data.current.weather[0].id
+                // let curTemp = data.current.temp
+                // let curHumid = data.current.humidity
+                // let curUV = data.current.uvi
+                // let curWind = data.current.wind_speed
+
+                
+                for (let i = 1; i < 5; i++) {
+                    dayWeatherArr.push(data.daily[i].weather[0].id)
+                    dayTempArr.push(data.daily[i].temp.day)
+                    dayHumidArr.push(data.daily[i].humidity)
+                    dayUvArr.push(data.daily[i].uvi)
+                    dayWindArr.push(data.daily[i].wind_speed)
+                }
+                console.log(dayWeatherArr)
+                console.log(dayTempArr)
+                console.log(dayWindArr)
+            })
+    })
