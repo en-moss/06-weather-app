@@ -5,12 +5,10 @@ header {
     margin-bottom: 1rem;
 }
 
-.cityBtn {
-    margin: .25rem;
+p {
+    font-weight: bolder;
 }
 
-.city-selection {
-    border: solid 2px;
-    border-radius: 5px;
-    padding: .5rem 1rem;
+.cityBtn {
+    margin: .25rem;
 }
