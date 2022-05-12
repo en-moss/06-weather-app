@@ -10,40 +10,33 @@ let latLonBase = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 let cityBaseURL = 'https://api.openweathermap.org/data/2.5/onecall?'
 let cityNameURL = 'https://api.openweathermap.org/data/2.5/weather?'
 
-let city = document.getElementById('city-input');
-let search = document.getElementById('city-search');
-let curDayBlock = document.getElementById('day0');
-let days = document.querySelectorAll('.day');
+let city = document.getElementById('citySearch');
+let search = document.getElementById('cityBtn');
+let cityList = document.getElementById('cityList');
 
-//TODO: add history of cities used as buttons underneath the search button
-let pastSearch = document.getElementById('past-search');
+let curDayBlock = document.getElementById('day0')
+let days = document.querySelectorAll('#day')
 
-let modalBlock = document.getElementById('city-select');
-let cityList = document.getElementById('city-list');
-let exitBtn = document.getElementsByClassName('exit')[0];
 
 search.addEventListener('click', function(e) {
     e.preventDefault()
     let cityCoord = latLonBase + city.value + '&limit=5&appid=' + apiKey;
-
+    
     fetch(cityCoord)
     .then (function (response) {
         if (response.ok) {
             response.json()
             .then (function(data) {
-                modalBlock.style.display='block';
-
                 let line = document.createElement('hr')
                 cityList.appendChild(line);
-
                 for (let i = 0; i < data.length; i++) {
                     let cityBtnEl = document.createElement('button');
-                    cityBtnEl.classList.add('city-btn', 'btn', 'btn-warning');
+                    cityBtnEl.classList.add('cityBtn', 'btn', 'btn-warning');
                     cityBtnEl.setAttribute('id', i);
                     cityBtnEl.innerHTML='<strong>' + data[i].name + '</strong> ' + data[i].state;
                     cityList.appendChild(cityBtnEl);
                     
-                    let cityButtons = document.querySelectorAll('.city-btn')
+                    let cityButtons = document.querySelectorAll('.cityBtn')
 
                     cityButtons[i].addEventListener('click', function() {
                         let chosenCoords = this.id
@@ -53,22 +46,11 @@ search.addEventListener('click', function(e) {
                         let cityName = cityNameURL + 'lat=' + lat + '&lon=' + lon + '&units=imperial&exclude=minutely,hourly&appid=' + apiKey;
                         localStorage.setItem('cityURL', cityURL);
                         localStorage.setItem('cityName', cityName)
-                        modalBlock.style.display='none'
                     })
                 }
             })
         }
     })
-})
-
-exitBtn.addEventListener('click', function() {
-    modalBlock.style.display='none';
-})
-
-window.addEventListener('click', function(e) {
-    if (e.target == modalBlock) {
-        modalBlock.style.display = 'none'
-    }
 })
 
 fetch(localStorage.getItem('cityName'))
@@ -109,7 +91,6 @@ fetch(localStorage.getItem('cityURL'))
                 humidToday.textContent = 'Humidity: ' + curHumid
                 uvToday.textContent = 'UV index: ' + curUV
                 windToday.textContent = 'Wind speed: ' + curWind + ' MPH'
-                curDayBlock.classList.add('today')
 
                 if (curWeather >= 200 && curWeather <= 232) {
                     weatherToday.setAttribute('src', './Assets/Images/thunder.png')
@@ -155,7 +136,6 @@ fetch(localStorage.getItem('cityURL'))
                         humidDay.textContent = 'Humidity: ' + dayHumidArr[i]
                         uvDay.textContent = 'UV index: ' + dayUvArr[i]
                         windDay.textContent = 'Wind speed: ' + dayWindArr[i] + ' MPH'
-                        days[i].classList.add('daily')
                         // why couldnt i use this to modify the textcontent instead?
                         // days[i].children.textContent = dayTempArr[i]
 
