@@ -1,5 +1,6 @@
 window.addEventListener('load', function() {
-    localStorage.clear()
+    localStorage.removeItem('cityName')
+    localStorage.removeItem('cityURL')
 })
 
 // api documentation https://openweathermap.org/api/one-call-api
@@ -17,6 +18,18 @@ let days = document.querySelectorAll('.day');
 
 //TODO: add history of cities used as buttons underneath the search button
 let pastSearch = document.getElementById('past-search');
+let searchHistory = JSON.parse(localStorage.getItem('pastCities'))
+function getSearches() {
+    if (searchHistory == null) {
+        let pastArr = [];
+        localStorage.setItem('pastCities', JSON.stringify(pastArr));
+    }
+    else {
+        return;
+    }  
+}
+
+getSearches();
 
 let modalBlock = document.getElementById('city-select');
 let cityList = document.getElementById('city-list');
@@ -40,6 +53,8 @@ search.addEventListener('click', function(e) {
                     let cityBtnEl = document.createElement('button');
                     cityBtnEl.classList.add('city-btn', 'btn', 'btn-warning');
                     cityBtnEl.setAttribute('id', i);
+                    cityBtnEl.setAttribute('data-name', data[i].name)
+                    cityBtnEl.setAttribute('data-state', data[i].state)
                     cityBtnEl.innerHTML='<strong>' + data[i].name + '</strong> ' + data[i].state;
                     cityList.appendChild(cityBtnEl);
                     
@@ -54,6 +69,12 @@ search.addEventListener('click', function(e) {
                         localStorage.setItem('cityURL', cityURL);
                         localStorage.setItem('cityName', cityName)
                         modalBlock.style.display='none'
+
+                        // Why doesn't this work? why do i need a second console.log again for this?
+                        let searchHistory = JSON.parse(localStorage.getItem('pastCities'))
+                        searchHistory.push(this.dataset.name + ', ' + this.dataset.state)
+                        console.log(searchHistory)
+                        localStorage.setItem('pastCities', JSON.stringify(searchHistory))
                     })
                 }
             })
@@ -70,6 +91,18 @@ window.addEventListener('click', function(e) {
         modalBlock.style.display = 'none'
     }
 })
+
+function addSearchHistory() {
+    let searchHistory = JSON.parse(localStorage.getItem('pastCities'))
+    for (var i = 0; i < searchHistory.length; i++) {
+        let pastBtnEl = document.createElement('button')
+        pastBtnEl.classList.add('btn', 'btn-info')
+        pastBtnEl.textContent = searchHistory[i]
+        pastSearch.appendChild(pastBtnEl)
+    }
+    localStorage.setItem('pastCities', JSON.stringify(searchHistory))
+}
+addSearchHistory();
 
 fetch(localStorage.getItem('cityName'))
     .then (function(response) {
@@ -135,7 +168,7 @@ fetch(localStorage.getItem('cityURL'))
                     dayUvArr.push(data.daily[i].uvi)
                     dayWindArr.push(data.daily[i].wind_speed)
                 }
-                //why can't I take this out of the function since it's using global arrays?
+
                 function popDays() {
                     for (var i = 0; i < 4; i++) {
                         var dayDate = document.createElement('h3')
@@ -156,8 +189,6 @@ fetch(localStorage.getItem('cityURL'))
                         uvDay.textContent = 'UV index: ' + dayUvArr[i]
                         windDay.textContent = 'Wind speed: ' + dayWindArr[i] + ' MPH'
                         days[i].classList.add('daily')
-                        // why couldnt i use this to modify the textcontent instead?
-                        // days[i].children.textContent = dayTempArr[i]
 
                         if (dayWeatherArr[i] >= 200 && dayWeatherArr[i] <= 232) {
                             weatherDay.setAttribute('src', './Assets/Images/thunder.png')
