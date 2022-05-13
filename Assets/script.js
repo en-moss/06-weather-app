@@ -15,8 +15,8 @@ let city = document.getElementById('city-input');
 let search = document.getElementById('city-search');
 let curDayBlock = document.getElementById('day0');
 let days = document.querySelectorAll('.day');
+let clear = document.getElementById('clear-history')
 
-//TODO: add history of cities used as buttons underneath the search button
 let pastSearch = document.getElementById('past-search');
 let searchHistory = JSON.parse(localStorage.getItem('pastCities'))
 function getSearches() {
@@ -70,8 +70,8 @@ search.addEventListener('click', function(e) {
                         localStorage.setItem('cityName', cityName)
                         modalBlock.style.display='none'
 
-                        // Why doesn't this work? why do i need a second console.log again for this?
                         let searchHistory = JSON.parse(localStorage.getItem('pastCities'))
+                        //turn this into an object with lat and lon as well so you can get to it in the future by clicking on search button
                         searchHistory.push(this.dataset.name + ', ' + this.dataset.state)
                         console.log(searchHistory)
                         localStorage.setItem('pastCities', JSON.stringify(searchHistory))
@@ -95,14 +95,22 @@ window.addEventListener('click', function(e) {
 function addSearchHistory() {
     let searchHistory = JSON.parse(localStorage.getItem('pastCities'))
     for (var i = 0; i < searchHistory.length; i++) {
+        // cycle through and if city name is already listed don't create a new one
         let pastBtnEl = document.createElement('button')
-        pastBtnEl.classList.add('btn', 'btn-info')
+        pastBtnEl.classList.add('btn', 'btn-warning')
         pastBtnEl.textContent = searchHistory[i]
         pastSearch.appendChild(pastBtnEl)
     }
     localStorage.setItem('pastCities', JSON.stringify(searchHistory))
 }
-addSearchHistory();
+addSearchHistory(); //still have to add actual functionalist to buttons
+
+clear.addEventListener('click', function() {
+    localStorage.removeItem('pastCities')
+    while (pastSearch.firstChild) {
+        pastSearch.removeChild(pastSearch.lastChild);
+    }
+})
 
 fetch(localStorage.getItem('cityName'))
     .then (function(response) {
@@ -160,6 +168,16 @@ fetch(localStorage.getItem('cityURL'))
                     weatherToday.setAttribute('src', './Assets/Images/clouds.png')
                 }
 
+                if (curUV <= 2) {
+                    uvToday.classList.add('uvi-good')
+                } else if (curUV <= 5 && curUV > 2) {
+                    uvToday.classList.add('uvi-mod')
+                } else if (curUV <= 7 && curUV > 5) {
+                    uvToday.classList.add('uvi-high')
+                } else {
+                    uvToday.classList.add('uvi-v-high')
+                }
+
                 for (var i = 1; i < 5; i++) {
                     dayDateArr.push(data.daily[i].dt)
                     dayWeatherArr.push(data.daily[i].weather[0].id)
@@ -204,6 +222,16 @@ fetch(localStorage.getItem('cityURL'))
                             weatherDay.setAttribute('src', './Assets/Images/few-clouds.png')
                         } else {
                             weatherDay.setAttribute('src', './Assets/Images/clouds.png')
+                        }
+
+                        if (dayUvArr[i] <= 2) {
+                            uvDay.classList.add('uvi-good')
+                        } else if (dayUvArr[i] <= 5 && dayUvArr[i] > 2) {
+                            uvDay.classList.add('uvi-mod')
+                        } else if (dayUvArr[i] <= 7 && dayUvArr[i] > 5) {
+                            uvDay.classList.add('uvi-high')
+                        } else {
+                            uvDay.classList.add('uvi-v-high')
                         }
                     }
                 }
