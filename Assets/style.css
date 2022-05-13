@@ -1,6 +1,10 @@
+body {
+    background-color: lavender;
+}
+
 header {
     text-align: center;
-    background-image: linear-gradient(to bottom right, rgb(221, 49, 60), orange);
+    background-image: linear-gradient(to bottom right, rgb(56, 109, 255), rgb(16, 214, 217));
     padding: .5rem;
     margin-bottom: 1rem;
 }
@@ -19,7 +23,7 @@ button {
 }
 
 .today {
-    background-color: aquamarine;
+    background-color: rgba(119, 242, 201, 0.65);
     padding: 2rem;
     margin-bottom: 1rem;
     border: solid 3px rgb(40, 43, 43);
@@ -27,7 +31,7 @@ button {
 }
 
 .daily {
-    background-color: aquamarine;
+    background-color: rgba(119, 242, 201, 0.65);
     padding: .5rem;
     border: solid 3px rgb(40, 43, 43);
     border-radius: 5px;

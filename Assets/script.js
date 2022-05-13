@@ -5,7 +5,7 @@ window.addEventListener('load', function() {
 
 // api documentation https://openweathermap.org/api/one-call-api
 
-let apiKey = 'c2472aea17954013d40705840bcbffd4';
+let apiKey = config_key;
 
 let latLonBase = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 let cityBaseURL = 'https://api.openweathermap.org/data/2.5/onecall?'
@@ -35,7 +35,9 @@ let modalBlock = document.getElementById('city-select');
 let cityList = document.getElementById('city-list');
 let exitBtn = document.getElementsByClassName('exit')[0];
 
-search.addEventListener('click', function(e) {
+search.addEventListener('click', searchCity)
+
+function searchCity(e) {
     e.preventDefault()
     let cityCoord = latLonBase + city.value + '&limit=5&appid=' + apiKey;
 
@@ -49,6 +51,7 @@ search.addEventListener('click', function(e) {
                 let line = document.createElement('hr')
                 cityList.appendChild(line);
 
+                //store lat and lon data in html data-attribute for recall in history button push
                 for (let i = 0; i < data.length; i++) {
                     let cityBtnEl = document.createElement('button');
                     cityBtnEl.classList.add('city-btn', 'btn', 'btn-warning');
@@ -80,7 +83,7 @@ search.addEventListener('click', function(e) {
             })
         }
     })
-})
+}
 
 exitBtn.addEventListener('click', function() {
     modalBlock.style.display='none';
@@ -98,6 +101,7 @@ function addSearchHistory() {
         // cycle through and if city name is already listed don't create a new one
         let pastBtnEl = document.createElement('button')
         pastBtnEl.classList.add('btn', 'btn-warning')
+
         pastBtnEl.textContent = searchHistory[i]
         pastSearch.appendChild(pastBtnEl)
     }
@@ -119,13 +123,6 @@ fetch(localStorage.getItem('cityName'))
                 curDayBlock.innerHTML = '<h2>' + data.name + '</h2>'
             })
     })
-
-let dayDateArr = [];
-let dayWeatherArr = [];
-let dayTempArr = [];
-let dayHumidArr = [];
-let dayUvArr = [];
-let dayWindArr = [];
 
 fetch(localStorage.getItem('cityURL'))
     .then (function(response) {
@@ -152,21 +149,9 @@ fetch(localStorage.getItem('cityURL'))
                 windToday.textContent = 'Wind speed: ' + curWind + ' MPH'
                 curDayBlock.classList.add('today')
 
-                if (curWeather >= 200 && curWeather <= 232) {
-                    weatherToday.setAttribute('src', './Assets/Images/thunder.png')
-                } else if (curWeather >= 500 && curWeather <= 531) {
-                    weatherToday.setAttribute('src', './Assets/Images/rain.png')
-                } else if (curWeather >= 600 && curWeather <= 622) {
-                    weatherToday.setAttribute('src', './Assets/Images/snow.png')
-                } else if (curWeather >= 701 && curWeather <= 781) {
-                    weatherToday.setAttribute('src', './Assets/Images/mist.png')
-                } else if (curWeather == 800) {
-                    weatherToday.setAttribute('src', './Assets/Images/clear.png')
-                } else if (curWeather >= 801 && curWeather <= 802) {
-                    weatherToday.setAttribute('src', './Assets/Images/few-clouds.png')
-                } else {
-                    weatherToday.setAttribute('src', './Assets/Images/clouds.png')
-                }
+                
+                var iconURL = `http://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png`
+                weatherToday.setAttribute('src', iconURL)
 
                 if (curUV <= 2) {
                     uvToday.classList.add('uvi-good')
@@ -178,17 +163,8 @@ fetch(localStorage.getItem('cityURL'))
                     uvToday.classList.add('uvi-v-high')
                 }
 
-                for (var i = 1; i < 5; i++) {
-                    dayDateArr.push(data.daily[i].dt)
-                    dayWeatherArr.push(data.daily[i].weather[0].id)
-                    dayTempArr.push(data.daily[i].temp.day)
-                    dayHumidArr.push(data.daily[i].humidity)
-                    dayUvArr.push(data.daily[i].uvi)
-                    dayWindArr.push(data.daily[i].wind_speed)
-                }
-
                 function popDays() {
-                    for (var i = 0; i < 4; i++) {
+                    for (var i = 1; i < 5; i++) {
                         var dayDate = document.createElement('h3')
                         var weatherDay = document.createElement('img')
                         var tempDay = document.createElement('p')
@@ -201,34 +177,24 @@ fetch(localStorage.getItem('cityURL'))
                         days[i].appendChild(humidDay)
                         days[i].appendChild(uvDay)
                         days[i].appendChild(windDay)
-                        dayDate.textContent = moment.unix(dayDateArr[i]).format('MM/DD/YYYY')
-                        tempDay.textContent = 'Temperature: ' + dayTempArr[i] + ' °F'
-                        humidDay.textContent = 'Humidity: ' + dayHumidArr[i]
-                        uvDay.textContent = 'UV index: ' + dayUvArr[i]
-                        windDay.textContent = 'Wind speed: ' + dayWindArr[i] + ' MPH'
+                        dayDate.textContent = moment.unix(data.daily[i].dt).format('MM/DD/YYYY')
+                        tempDay.textContent = 'Temperature: ' + data.daily[i].temp.day + ' °F'
+                        humidDay.textContent = 'Humidity: ' + data.daily[i].humidity
+                        uvDay.textContent = 'UV index: ' + data.daily[i].uvi
+                        windDay.textContent = 'Wind speed: ' + data.daily[i].wind_speed + ' MPH'
                         days[i].classList.add('daily')
 
-                        if (dayWeatherArr[i] >= 200 && dayWeatherArr[i] <= 232) {
-                            weatherDay.setAttribute('src', './Assets/Images/thunder.png')
-                        } else if (dayWeatherArr[i] >= 500 && dayWeatherArr[i] <= 531) {
-                            weatherDay.setAttribute('src', './Assets/Images/rain.png')
-                        } else if (dayWeatherArr[i] >= 600 && dayWeatherArr[i] <= 622) {
-                            weatherDay.setAttribute('src', './Assets/Images/snow.png')
-                        } else if (dayWeatherArr[i] >= 701 && dayWeatherArr[i] <= 781) {
-                            weatherDay.setAttribute('src', './Assets/Images/mist.png')
-                        } else if (dayWeatherArr[i] == 800) {
-                            weatherDay.setAttribute('src', './Assets/Images/clear.png')
-                        } else if (dayWeatherArr[i] >= 801 && dayWeatherArr[i] <= 802) {
-                            weatherDay.setAttribute('src', './Assets/Images/few-clouds.png')
-                        } else {
-                            weatherDay.setAttribute('src', './Assets/Images/clouds.png')
-                        }
+                        console.log(data)
+                        console.log(data.daily[i].weather[0].icon)
 
-                        if (dayUvArr[i] <= 2) {
+                        var iconURL = `http://openweathermap.org/img/wn/${data.daily[i].weather[0].icon}@2x.png`
+                        weatherDay.setAttribute('src', iconURL)
+
+                        if (data.daily[i].uvi <= 2) {
                             uvDay.classList.add('uvi-good')
-                        } else if (dayUvArr[i] <= 5 && dayUvArr[i] > 2) {
+                        } else if (data.daily[i].uvi <= 5 && data.daily[i].uvi > 2) {
                             uvDay.classList.add('uvi-mod')
-                        } else if (dayUvArr[i] <= 7 && dayUvArr[i] > 5) {
+                        } else if (data.daily[i].uvi <= 7 && data.daily[i].uvi > 5) {
                             uvDay.classList.add('uvi-high')
                         } else {
                             uvDay.classList.add('uvi-v-high')
