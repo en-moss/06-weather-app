@@ -1,4 +1,4 @@
-# 06-weather-app
+# basic-weather-app
 
 ## Description
 
